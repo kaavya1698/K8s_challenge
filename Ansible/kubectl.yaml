@@ -1,0 +1,16 @@
+# Expects `kubernetes_api_endpoint` as `--extra-vars "kubernetes_api_endpoint=xxxx"`
+- hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+  - name: Set kubectl endpoint
+    shell: "kubectl config set-cluster {{ cluster_name }} --certificate-authority={{ playbook_dir }}/../cert/ca.pem --embed-certs=true --server=https://{{ kubernetes_api_endpoint }}:6443"
+
+  - name: Set kubectl credentials
+    shell: "kubectl config set-credentials {{ user }} --token {{ token }}"
+
+  - name: Set kubectl default context
+    shell: "kubectl config set-context default-context --cluster={{ cluster_name }} --user={{ user }}"
+
+  - name: Switch kubectl to default context
+    shell: "kubectl config use-context default-context"
